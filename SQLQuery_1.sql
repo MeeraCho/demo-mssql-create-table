@@ -1,12 +1,12 @@
-drop table student
 drop table grade
+drop table Activity
+drop table student
 drop table club
 drop table COURSE
-drop table Activity
 
 Create TABLE Course
 (
-    CourseID CHAR(6) NOT NULL,
+    CourseID CHAR(6) NOT NULL constraint pk_Course Primary Key,
     CourseName VARCHAR(40) NOT NULL,
     Hours SMALLINT NULL,
     NoOfStudents SMALLINT NULL
@@ -14,7 +14,7 @@ Create TABLE Course
 
 create table Student
 (
-    StudentID int not null,
+    StudentID int not null constraint pk_Student Primary Key,
     StudentFirstName VARCHAR(40) not null,
     StudentLastName VARCHAR(40) not null,
     GenderCode CHAR(1) not NULL,
@@ -27,21 +27,22 @@ create table Student
 
 create table Grade 
 (
-    StudentID int not null,
-    CourseID char(6) not null,
-    Mark SMALLINT null
+    StudentID int not null constraint fk_GradeToStudent references Student(StudentID),
+    CourseID char(6) not null constraint fk_GradeToCourse references Course(CourseID),
+    Mark SMALLINT null,
+    constraint pk_Grade Primary Key(StudentID, CourseID)
 )
 
 create table Club
 (
-    ClubID int not null,
+    ClubID int not null constraint pk_Club Primary Key,
     ClubName VARCHAR(50) not null
 )
 
 create table Activity
 (
-    StudentID int not null,
-    ClubID int not null
+    StudentID int not null constraint fk_ActivityToStudent references Student(StudentID),
+    ClubID int not null constraint fk_ActivityToClub references Club(ClubID),
+    constraint pk_Activity Primary Key(StudentID, ClubID)
 )
-
 

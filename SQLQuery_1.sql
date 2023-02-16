@@ -46,3 +46,32 @@ create table Activity
     constraint pk_Activity Primary Key(StudentID, ClubID)
 )
 
+ALTER TABLE Club
+    ADD 
+    MeetingLocation varChar(50) null
+
+-- Add a constraint to birthdate to ensure the value is <(less than) todays date
+Alter Table Student 
+    Add 
+    Constraint CK_Birthdate 
+    Check (birthdate < getDate())
+
+-- Add a constraint to set a default of 80 to the Hours field
+Alter Table Course
+    Add 
+    Constraint DF_Hours
+    Default 80 for Hours
+
+-- disable the check constraint for the birthdate field
+Alter Table Student
+    NoCheck Constraint ck_Birthdate
+
+-- enable the check constraint for the Birthdate field
+Alter Table Student 
+    check constraint ck_Birthdate
+
+-- Delete the default constraint for the Hours field 
+Alter Table Course 
+    Drop Constraint DF_Hours
+
+

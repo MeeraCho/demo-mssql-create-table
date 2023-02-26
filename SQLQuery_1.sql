@@ -74,4 +74,16 @@ Alter Table Student
 Alter Table Course 
     Drop Constraint DF_Hours
 
+-- create nonclustered index as CourseId in Marks table 
+-- index을 ix_CourseId로 하면 다른 테이블에서도 같은 이름이 너무 많이 나옴. 
+Create nonclustered index ix_Marks_CourseId
+    on Marks (CourseId)
 
+-- Drop nonclustered index as CourseId in Marks table 
+Drop index ix_Marks_CourseId on Marks
+
+-- setting FKs as non-clustered indexes
+Create nonclustered index IX_Grade_StudentId on Grade(StudentId)
+Create nonclustered index IX_Grade_CourseId on Grade(CourseId)
+Create nonclustered index IX_Activity_StudentId on Activity(StudentId)
+Create nonclustered index IX_Activity_ClubId on Activity(ClubId)

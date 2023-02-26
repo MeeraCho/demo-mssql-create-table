@@ -3,7 +3,6 @@ DROP TABLE MOVIE
 DROP TABLE GENRE
 DROP TABLE THEATER
 
-
 -- parent table have to be before children tables --
 CREATE TABLE GENRE
 (

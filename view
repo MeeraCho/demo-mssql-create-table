@@ -1,0 +1,85 @@
+--VIEWS
+-- A query that is stored in the database
+-- given a name
+-- custom table I can create from query
+-- so, we can use VIEW just like a table. We can select from a view
+
+-- Create a view that contains all the student names 
+Create View StudentNameView 
+AS
+Select firstName, LastName from student 
+go
+
+--Use the view like a table 
+Select FirstName + ' ' + LastName 'StudentName' from StudentNameView
+GO
+
+--Create a View called InstructorStudentView that allows access to studentID's and Names. 
+Create View InstructorsStudentView
+AS
+Select StudentID, FirstName, LastName from Student
+GO
+
+Create View RegistrarView
+AS
+Select StudentID, FirstName, LastName, StreetAddress, City, Province from Student
+GO
+
+--Simplify Complex queries and promote reusability of code
+--Write a View called StudentTranscript that contains 
+--studentID, FirstName, LastName, CourseId, CourseName, Mark, Staffid, FirstName, LastName, Startdate, EndDate for all Stuents that have taken.
+Create View StudentTranscript
+AS
+Select student.studentID, student.FirstName'StudentFirstName', student.LastName'StudentLastName', course.CourseId, CourseName, Mark, staff.Staffid, staff.FirstName'StaffFirstName', staff.LastName'StaffLastName', Startdate, EndDate from Student
+Inner Join registration on Student.StudentID = Registration.StudentID
+Inner Join offering on offering.offeringCode=Registration.offeringCode
+inner join Staff on Staff.staffID = offering.staffID
+inner join course on course.courseID = offering.courseID
+inner join semester on semester.semesterCode = offering.semesterCode
+go
+
+-- studentID = 199800209
+Select * from STudentTranscript
+Where studentID = 199899200
+go
+
+--Drop View
+Drop View StudentTranscript
+go
+
+--Retrieve the source code that created the view 
+sp_helptext StudentTranscript
+
+--Edit a View 
+Alter View StudentTranscript
+AS
+Select student.studentID, student.FirstName'StudentFirstName', student.LastName'StudentLastName', course.CourseId, CourseName, Mark'Grade', staff.Staffid, staff.FirstName'StaffFirstName', staff.LastName'StaffLastName', Startdate, EndDate from Student
+Inner Join registration on Student.StudentID = Registration.StudentID
+Inner Join offering on offering.offeringCode=Registration.offeringCode
+inner join Staff on Staff.staffID = offering.staffID
+inner join course on course.courseID = offering.courseID
+inner join semester on semester.semesterCode = offering.semesterCode
+go
+
+
+-- Use the School158 database for this exercise.  If an operation fails write a brief explanation why. Do not just quote the error message genereated by the server!
+
+-- 1.	Create a view of staff full names called staff_list.
+
+-- 2.	Create a view of staff ID's, full names, positionID's and datehired called staff_confidential.
+
+-- 3.	Create a view of student ID's, full names, courseId's, course names, and grades called student_grades.
+
+-- 4.	Use the student_grades view to create a grade report for studentID 199899200 that shows the students ID, full name, course names and marks.
+
+-- 5.	Select the same information using the student_grades view for studentID 199912010.
+
+-- 6.	Using the student_grades view  update the mark for studentID 199899200 in course dmit152 to be 90  and change the coursename to be 'basket weaving 101'.
+
+-- 7.	Using the student_grades view, update the  mark for studentID 199899200 in course dmit152 to be 90.
+
+-- 8.	Using the student_grades view, delete the same record from question 7.
+
+-- 9.	Retrieve the code for the student_grades view from the database.
+
+

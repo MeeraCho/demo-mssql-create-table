@@ -56,32 +56,75 @@ Select studentID, FirstName + ' ' + LastName 'StudentName' from Student
 Where studentID NOT IN (Select StudentID from payment) 
 
 -- Exercise 
--- 1. Select the Payment dates and payment amount for all payments that were Cash
+-- 1. Select the Payment dates and payment amount for ALL payments that were 'Cash'
+select PaymentDate, Amount from Payment
+where paymentTypeID = (select paymentTypeId from paymenttype where PaymentTypeDescription = 'cash')
 
+Select paymentdate, amount from Payment
+inner join paymenttype on paymenttype.paymentTypeID = Payment.paymentTypeID
+where PaymentTypeDescription = 'cash'
 
 -- 2. Select The Student ID's of all the students that are in the 'Association of Computing Machinery' club
+Select studentID from activity 
+where clubid = (select clubid from club where clubName = 'Association of Computing Machinery')
 
+Select studentID from activity 
+inner join club on activity.clubId = club.clubid
+where clubName = 'Association of Computing Machinery'
 
 -- 3. Select All the staff full names that have taught a course.
+Select firstName + ' ' + LastName 'StaffName' from staff
+where staffid IN (select distinct staffID from offering)
 
+Select distinct firstName + ' ' + LastName 'StaffName' from staff
+inner join offering on staff.staffId = offering.staffId 
 
 -- 4. Select All the staff full names that taught DMIT172.
+Select distinct firstName + ' ' + LastName 'StaffName' from staff
+where staffid IN (select staffId from offering where courseId = 'DMIT172')
+
+Select distinct firstName + ' ' + LastName 'StaffName' from staff
+inner join offering on staff.staffId = offering.staffId 
+where courseid = 'DMIT172'
+
+-- 5. Select All the staff full names that have NEVER taught a course
+Select firstName + ' ' + lastName 'StaffName' from staff
+left outer join offering on staff.staffID = offering.staffID
+where offeringcode is null
+
+Select firstName + ' ' + lastName 'StaffName' from staff
+left outer join offering on staff.staffID = offering.staffID
+group by staff.staffid, firstName, LastName
+having count(offeringCode) = 0 
+
+-- 6. What is the total avg mark for the students from Edmonton?
+select avg(mark)'AvgMark' from registration 
+where studentID in (select studentID from student where city = 'edmonton')
+
+Select avg(mark)'AvgMark' from Registration 
+inner join Student on registration.studentID = Student.StudentID
+where city = 'Edmonton'
 
 
--- 5. Select All the staff full names that have never taught a course
+-- 7. What is the avg mark for each of the students from Edmonton? Display their StudentID and avg(mark)
+--Good Solution
+select studentID, avg(mark)'AvgMark' from registration 
+where studentID in (select studentID from student where city = 'edmonton')
+group by studentID
+--먼저 학생 3명을 뽑아낸 후 그 3명만 계산을 함 
 
 
--- 6. Select the Payment TypeID(s) that have the highest number of Payments made.
+Select student.studentID, avg(mark)'AvgMark' from Registration 
+inner join Student on registration.studentID = Student.StudentID
+where city = 'Edmonton'
+group by student.studentID
 
-
--- 7. Select the Payment Type Description(s) that have the highest number of Payments made.
-
-
--- 8. What is the total avg mark for the students from Edmonton?
-
-
--- 9. What is the avg mark for each of the students from Edmonton? Display their StudentID and avg(mark)
-
-
+--BAD SOLUTION because It's completely inefficient !!
+select studentID, avg(mark)'AvgMark' from registration 
+group by studentID
+having studentID in (select studentID from student where city = 'edmonton')
+--1. Having should only EVER have Min, Max, Sum,Count, Avg after it. That's only for aggregate column. 
+--500,000 registration 400,000 student가 있고 Edmonton에 사는 학생은 3명만 있다고 할 때 
+--코드는 위에서 아래로 실행되기에 각 400,000명의 학생을 group by해서 avg를 낸 후 having으로 3명을 걸러낸다. It's completely inefficient !!
 
 
